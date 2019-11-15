@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://kit.fontawesome.com/3a620b4bd5.js" crossorigin="anonymous"></script>
+
+    <title>Weather Dashboard</title>
+  </head>
+
+  <body>
+    <header class="jumbotron">
+      <h1 class="display-3 text-center">Weather Dashboard</h1>
+      <p class="lead text-center">Your destination for conditions around the world!</p>
+      <p id="currentDay" class="lead"></p>
+    </header> 
+    <div class="container">
+        <div class="row">
+            <div class="col-3 bg-light">
+                    <div class="form-inline pt-2">
+                        <label for="cityInput">Search for a city:</label>
+                        <input type="cityInput" class="form-control" id="cityInput" placeholder="Search">
+                        <button type="search" class="btn btn-primary" id="searchBtn"><i class="fas fa-search-location"></i></button>
+                    </div>
+                    <div id="searchHistory">                      
+                    </div>                 
+            </div>
+            <div class= "col-9">
+                Current Data + 5 Day Forecast
+            </div>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="scripts.js"></script>
+    
+  </body>
+</html>
