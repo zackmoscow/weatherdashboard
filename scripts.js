@@ -1,12 +1,12 @@
 $(document).ready(function() {
 
-    // var searchHistory = [];
+    var searchHistory = {};
+    searchHistory = JSON.parse(localStorage.getItem("searches")) || [];
 
     $("#searchBtn").on('click', function() {
         var search = $(this).prev().val();
-        // searchHistory = JSON.parse(localStorage.getItem("searches")) || [];
-        // searchHistory.push(search);
-        // localStorage.setItem("searches", JSON.stringify(searchHistory));
+        searchHistory.push(search);
+        localStorage.setItem("searches", JSON.stringify(searchHistory));
         currentWeather(search);
         fiveDayForecast(search);
     });
@@ -28,20 +28,23 @@ $(document).ready(function() {
           var cityLat = response.coord.lat;
           var cityLon = response.coord.lon;
 
-          getUV(cityLat, cityLon);
-
           var currentWeatherDiv = $("<div>")
-            currentWeatherDiv.attr("id", "current");
+            currentWeatherDiv.attr("id", "current").attr("class", "border border-secondary");
           var weatherIcon = $("<img>");
             weatherIcon.attr("src", iconURL);
-            weatherIcon.css("float", "right");
           var headline = $("<h2>" + cityName + ' (' + cityDate + ') ' + "</h2>");
+            headline.attr("class", "ml-3 mt-3");
+            cityTemp.attr("class", "ml-3 mt-3");
+            cityHumidity.attr("class", "ml-3");
+            cityWindSpeed.attr("class", "ml-3");
           currentWeatherDiv.append(headline);
           headline.append(weatherIcon);
           currentWeatherDiv.append(cityTemp);
           currentWeatherDiv.append(cityHumidity);
           currentWeatherDiv.append(cityWindSpeed);
-          $("#current").append(currentWeatherDiv);
+          $("#current").replaceWith(currentWeatherDiv);
+
+          getUV(cityLat, cityLon);
           });
     };
 
@@ -51,8 +54,22 @@ $(document).ready(function() {
           url: queryURL2,
           method: "GET"
         }).then(function(response) {
-          var cityUV = $("<p>").text("UV Index: " + response.value);
-          $("#current").append(cityUV);
+          var cityUVRaw = JSON.parse(response.value);
+          console.log(cityUVRaw);
+          var cityUV = $("<span>").text(cityUVRaw);
+            if (cityUVRaw < 3) {
+              cityUV.css("color", "green");
+            } else if (cityUVRaw >= 3 && cityUVRaw < 6) {
+              cityUV.css("color", "orange");
+            } else if (cityUVRaw >= 6 && cityUVRaw <= 8) {
+              cityUV.css("color", "red");
+            } else {
+              cityUV.css("color", "maroon");
+            }
+            var cityUVDisplay = $("<p>").text("UV Index: ")
+            cityUVDisplay.attr("class", "ml-3")
+            cityUVDisplay.append(cityUV);
+          $("#current").append(cityUVDisplay);
         });
     };
 
@@ -63,16 +80,21 @@ $(document).ready(function() {
         url: queryURL,
         method: "GET"
       }).then(function(response) {
-        console.log(response);
-        $("#fiveDayHead").append("<h3> Five Day Forecast: </h3>")
-        for (i = 5; i < 38; i += 8) {
-          var updatedTime = moment.unix(response.list[i].dt + response.city.timezone).format("MM/DD/YYYY");
+        var headline = $("<h3>").text("Five Day Forecast:");
+          $("#fiveDayHead").replaceWith(headline);
+        var newFiveDay = $("<div>");
+          newFiveDay.attr("id", "fiveDay").attr("class", "card-deck");
+        $("#fiveDay").replaceWith(newFiveDay);
+        for (i = 6; i < 39; i += 8) {
+          var updatedTime = $('<p class="mt-2">').text(moment.unix(response.list[i].dt + response.city.timezone).format("MM/DD/YYYY"));
+            updatedTime.css("text-align", "center");
+            updatedTime.css("font-weight", "bold");
           var iconURL = "http://openweathermap.org/img/wn/" + response.list[i].weather[0].icon + "@2x.png";
           var cityTemp = $("<p>").text("Temp: " + (((response.list[i].main.temp * 9) / 5) - 459.67).toFixed(0) + "°F");
           var cityHumidity = $("<p>").text("Humidity: " + response.list[i].main.humidity + "%");
 
           var fiveDayDiv = $("<div>");
-            fiveDayDiv.attr("class", "card");
+            fiveDayDiv.attr("class", "card bg-light");
           var fiveDayIcon = $("<img>");
             fiveDayIcon.attr("src", iconURL);
           
@@ -81,25 +103,8 @@ $(document).ready(function() {
           fiveDayDiv.append(cityTemp);
           fiveDayDiv.append(cityHumidity);
           $("#fiveDay").append(fiveDayDiv);
-
-          //NOTE need to use bootstrap carddeck functionality for this
-          // <div class="card">
-          //   <img src="..." class="card-img-top" alt="...">
-          //   <div class="card-body">
-          //     <h5 class="card-title">Card title</h5>
-          //     <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-          //   </div>
-          //   <div class="card-footer">
-          //     <small class="text-muted">Last updated 3 mins ago</small>
-          //   </div>
-          // </div>
         }
       });
     }
-
-    function getIcon (cityCondition) {
-
-    }
-  
   });
 
