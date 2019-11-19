@@ -1,15 +1,34 @@
 $(document).ready(function() {
 
-    var searchHistory = {};
-    searchHistory = JSON.parse(localStorage.getItem("searches")) || [];
+    var searchHistory = {
+      searches: [],
+    };
 
     $("#searchBtn").on('click', function() {
-        var search = $(this).prev().val();
-        searchHistory.push(search);
-        localStorage.setItem("searches", JSON.stringify(searchHistory));
-        currentWeather(search);
-        fiveDayForecast(search);
+      var search = $("#cityInput").val();
+      searchHistory.searches.push({
+        search: search,
+      });
+      localStorage.setItem("searches", JSON.stringify(searchHistory));
+      currentWeather(search);
+      fiveDayForecast(search);
+      updateHistory(search);
     });
+
+    $(document).on('click', ".cityList", function() {
+      var cityName = $(this).text();
+      currentWeather(cityName);
+      fiveDayForecast(cityName);
+    });
+
+    function updateHistory(search) {
+      var searches = searchHistory.searches;
+      $("#searchHistory").empty();
+      searchHistoryUpdate = JSON.parse(localStorage.getItem("searches"));
+      for (i = 0; i < searches.length; i++) {
+        $("#searchHistory").append("<p class='cityList'>" + searches[i].search + "</p>");
+      }
+    }
 
     function currentWeather (search) {
         var queryURL = "http://api.openweathermap.org/data/2.5/weather?q=" +
@@ -45,7 +64,7 @@ $(document).ready(function() {
           $("#current").replaceWith(currentWeatherDiv);
 
           getUV(cityLat, cityLon);
-          });
+        });
     };
 
     function getUV(cityLat, cityLon) {
@@ -55,7 +74,6 @@ $(document).ready(function() {
           method: "GET"
         }).then(function(response) {
           var cityUVRaw = JSON.parse(response.value);
-          console.log(cityUVRaw);
           var cityUV = $("<span>").text(cityUVRaw);
             if (cityUVRaw < 3) {
               cityUV.css("color", "green");
@@ -84,7 +102,7 @@ $(document).ready(function() {
           $("#fiveDayHead").replaceWith(headline);
         var newFiveDay = $("<div>");
           newFiveDay.attr("id", "fiveDay").attr("class", "card-deck");
-        $("#fiveDay").replaceWith(newFiveDay);
+          $("#fiveDay").replaceWith(newFiveDay);
         for (i = 6; i < 39; i += 8) {
           var updatedTime = $('<p class="mt-2">').text(moment.unix(response.list[i].dt + response.city.timezone).format("MM/DD/YYYY"));
             updatedTime.css("text-align", "center");
