@@ -4,6 +4,18 @@ $(document).ready(function() {
       searches: [],
     };
 
+    function loadHistory() {
+      $("#searchHistory").empty();
+      searchHistoryUpdate = JSON.parse(localStorage.getItem("searches"));
+      console.log(searchHistoryUpdate);
+      for (i = 0; i < searchHistoryUpdate.searches.length; i++) {
+        $("#searchHistory").append("<p class='cityList'>" + searchHistoryUpdate.searches[i].search + "</p>");
+      }
+      var reversedSearchHistory = [...searchHistoryUpdate.searches].reverse();
+      currentWeather(reversedSearchHistory[0].search);
+      fiveDayForecast(reversedSearchHistory[0].search);
+    }
+
     $("#searchBtn").on('click', function() {
       var search = $("#cityInput").val();
       searchHistory.searches.push({
@@ -124,5 +136,6 @@ $(document).ready(function() {
         }
       });
     }
+    loadHistory();
   });
 
