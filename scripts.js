@@ -7,7 +7,6 @@ $(document).ready(function() {
     function loadHistory() {
       $("#searchHistory").empty();
       searchHistoryUpdate = JSON.parse(localStorage.getItem("searches"));
-      console.log(searchHistoryUpdate);
       for (i = 0; i < searchHistoryUpdate.searches.length; i++) {
         $("#searchHistory").append("<p class='cityList'>" + searchHistoryUpdate.searches[i].search + "</p>");
       }
