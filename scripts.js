@@ -42,7 +42,7 @@ $(document).ready(function() {
     }
 
     function currentWeather (search) {
-        var queryURL = "http://api.openweathermap.org/data/2.5/weather?q=" +
+        var queryURL = "https://api.openweathermap.org/data/2.5/weather?q=" +
         search + "&APPID=836ffc3974d6b7a17c9acd37053e9f61";
         $.ajax({
           url: queryURL,
@@ -51,7 +51,7 @@ $(document).ready(function() {
         
           var cityName = response.name;
           var cityDate = moment.unix(response.dt + response.timezone).format("MM/DD/YYYY");
-          var iconURL = "http://openweathermap.org/img/wn/" + response.weather[0].icon + "@2x.png";
+          var iconURL = "https://openweathermap.org/img/wn/" + response.weather[0].icon + "@2x.png";
           var cityTemp = $("<p>").text("Temperature: " + (((response.main.temp * 9) / 5) - 459.67).toFixed(0) + "°F");
           var cityHumidity = $("<p>").text("Humidity: " + response.main.humidity + "%");     
           var cityWindSpeed = $("<p>").text("Wind Speed: " + (response.wind.speed * 2.2369).toFixed(0) + " MPH");
@@ -79,7 +79,7 @@ $(document).ready(function() {
     };
 
     function getUV(cityLat, cityLon) {
-        var queryURL2 = "http://api.openweathermap.org/data/2.5/uvi?appid=836ffc3974d6b7a17c9acd37053e9f61&lat=" + cityLat + "&lon=" + cityLon;
+        var queryURL2 = "https://api.openweathermap.org/data/2.5/uvi?appid=836ffc3974d6b7a17c9acd37053e9f61&lat=" + cityLat + "&lon=" + cityLon;
         $.ajax({
           url: queryURL2,
           method: "GET"
@@ -103,7 +103,7 @@ $(document).ready(function() {
     };
 
     function fiveDayForecast (search) {
-      var queryURL = "http://api.openweathermap.org/data/2.5/forecast?q=" +
+      var queryURL = "https://api.openweathermap.org/data/2.5/forecast?q=" +
       search + "&APPID=836ffc3974d6b7a17c9acd37053e9f61";
       $.ajax({
         url: queryURL,
@@ -118,7 +118,7 @@ $(document).ready(function() {
           var updatedTime = $('<p class="mt-2">').text(moment.unix(response.list[i].dt + response.city.timezone).format("MM/DD/YYYY"));
             updatedTime.css("text-align", "center");
             updatedTime.css("font-weight", "bold");
-          var iconURL = "http://openweathermap.org/img/wn/" + response.list[i].weather[0].icon + "@2x.png";
+          var iconURL = "https://openweathermap.org/img/wn/" + response.list[i].weather[0].icon + "@2x.png";
           var cityTemp = $("<p>").text("Temp: " + (((response.list[i].main.temp * 9) / 5) - 459.67).toFixed(0) + "°F");
           var cityHumidity = $("<p>").text("Humidity: " + response.list[i].main.humidity + "%");
 
